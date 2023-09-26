@@ -1,0 +1,42 @@
+{
+  "name": "rotator_gallery",
+  "version": "1.0.0",
+  "description": "Rotate images around in carousel",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build",
+    "watch": "parcel watch"
+  },
+  "targets": {
+    "default": {
+      "distDir": "./dist",
+      "source": [
+        "src/main.js",
+        "src/style.scss"
+      ],
+      "optimize": true
+    }
+  },
+  "browserlist": [
+    "last 2 versions",
+    "not dead",
+    "> 0.5%"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeh74/rotator_gallery.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikeh74/rotator_gallery/issues"
+  },
+  "homepage": "https://github.com/mikeh74/rotator_gallery#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.9.3",
+    "eslint": "^8.49.0",
+    "eslint-config-google": "^0.14.0",
+    "parcel": "^2.9.3"
+  }
+}

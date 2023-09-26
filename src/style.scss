@@ -1,0 +1,258 @@
+$depth: 600px;
+$angle: 20deg;
+$shift: 30%;
+$sliderMargin: 55%;
+$animation-duration: 0.5s;
+$animation-timing-function: ease-in-out;
+$blurValue: 2px;
+
+$breakpoint: 576px;
+// $breakpoint: 768px;
+
+@mixin rg-trans($angle, $depth, $shift) {
+  transform: rotateY($angle) translateZ($depth) translateX($shift);
+}
+
+.rg-container {
+  aspect-ratio: 4 / 3;
+  position: relative;
+  display: block;
+  overflow: hidden;
+
+  @media (min-width: $breakpoint) {
+    aspect-ratio: 21 / 9;
+  }
+}
+
+.rg-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  inset: 0;
+
+  perspective: $depth;
+  perspective-origin: center center;
+  transform-style: preserve-3d;
+}
+
+.rg-btn {
+  color: transparent;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  position: absolute;
+  z-index: 120;
+  margin: 0;
+  padding: 0;
+  width: 15%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  // inset: 0;
+
+  &-back {
+    left: 0%;
+    opacity: 0.6;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  &-forward {
+    right: 0%;
+    opacity: 0.6;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}
+
+@media (min-width: $breakpoint) {
+  .rg-btn {
+    &-back {
+      left: 8%;
+    }
+
+    &-forward {
+      right: 8%;
+    }
+  }
+}
+
+// fix for IE
+.rg-btn-inner {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+}
+
+.rg-btn-svg {
+  border-radius: 50%;
+  padding: -2px;
+  position: absolute; // fix for safari positioning
+  left: 0;
+  background-color: rgb(77, 77, 77);
+}
+
+.rg-btn-svg-path {
+  fill: #fff;
+}
+
+.rg-item {
+  will-change: transform;
+  background-color: #d3d3d3;
+  box-shadow: 0px 0px 20px rgba(60, 60, 65, 0.8);
+  width: 100%;
+  display: block;
+  position: absolute;
+  z-index: 20;
+  transform: translateZ(-$depth);
+  transition: all $animation-duration $animation-timing-function;
+  opacity: 0;
+  filter: blur($blurValue);
+  height: 70%;
+  object-fit: cover;
+  object-position: center;
+
+  @supports (aspect-ratio: 5/3) {
+    height: auto;
+    aspect-ratio: 5/3;
+  }
+
+  @media (min-width: $breakpoint) {
+
+    width: 50%;
+
+    &-right {
+      opacity: 1;
+      z-index: 30;
+      transition: all $animation-duration $animation-timing-function;
+      @include rg-trans(-$angle, -$depth/2, $shift);
+    }
+
+    &-left {
+      opacity: 1;
+      z-index: 30;
+      transition: all $animation-duration $animation-timing-function;
+      @include rg-trans($angle, -$depth/2, -$shift);
+    }
+  }
+
+  &-active {
+    opacity: 1;
+    z-index: 60;
+    transition: all $animation-duration $animation-timing-function;
+    filter: blur(0);
+    transform: translateZ(0);
+  }
+}
+
+@supports (animation-duration: $animation-duration) {
+
+  @media (min-width: $breakpoint) {
+    .rg-item {
+      transition: z-index $animation-duration $animation-timing-function;
+
+      &-al {
+        @include rg-trans($angle, -$depth/2, -$shift);
+        animation: rg-left $animation-timing-function $animation-duration both;
+      }
+
+      &-la {
+        @include rg-trans($angle, -$depth/2, -$shift);
+        animation: rg-left $animation-timing-function $animation-duration reverse both;
+      }
+
+      &-ar {
+        @include rg-trans(-$angle, -$depth/2, $shift);
+        animation: rg-right $animation-timing-function $animation-duration both;
+      }
+
+      &-ra {
+        animation: rg-right $animation-timing-function $animation-duration reverse both;
+      }
+
+      &-ir {
+        opacity: 1;
+        animation: rg-init-right $animation-timing-function $animation-duration both;
+      }
+
+      &-ri {
+        opacity: 1;
+        animation: rg-init-right $animation-timing-function $animation-duration reverse both;
+      }
+
+      &-il {
+        opacity: 1;
+        animation: rg-init-left $animation-timing-function $animation-duration both;
+      }
+
+      &-li {
+        opacity: 1;
+        animation: rg-init-left $animation-timing-function $animation-duration reverse both;
+      }
+    }
+  }
+
+  @keyframes rg-left {
+    0% {
+      filter: blur(0);
+      @include rg-trans(0, 0, 0);
+    }
+
+    50% {
+      filter: blur($blurValue);
+      @include rg-trans(0, -$depth/8, -$sliderMargin);
+    }
+
+    100% {
+      filter: blur($blurValue);
+      @include rg-trans($angle, -$depth/2, -$shift);
+    }
+  }
+
+  @keyframes rg-right {
+    0% {
+      filter: blur(0);
+      @include rg-trans(0, 0, 0);
+    }
+
+    50% {
+      filter: blur($blurValue);
+      @include rg-trans(0, -$depth/8, $sliderMargin);
+    }
+
+    100% {
+      filter: blur($blurValue);
+      @include rg-trans(-$angle, -$depth/2, $shift);
+    }
+  }
+
+  @keyframes rg-init-right {
+    from {
+      @include rg-trans(0, -$depth, 0);
+    }
+
+    to {
+      @include rg-trans(-$angle, -$depth/2, $shift);
+    }
+  }
+
+  @keyframes rg-init-left {
+    from {
+      transform: translateZ(-$depth);
+    }
+
+    to {
+      @include rg-trans($angle, -$depth/2, -$shift);
+    }
+  }
+
+}
